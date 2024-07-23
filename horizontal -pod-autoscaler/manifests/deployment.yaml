@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app
+spec:
+  selector:
+    matchLabels:
+      run: web-app
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: web-app
+    spec:
+      containers:
+        - name: main
+          image: erodotos/k8s-examples/web-app:latest
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            limits:
+              cpu: 200m
+              memory: 15Mi
+            requests:
+              cpu: 100m
+              memory: 10Mi
